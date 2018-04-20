@@ -1,0 +1,47 @@
+#REAL VERSION
+application: distributoricarsharing
+version: 1
+
+runtime: python27
+api_version: 1
+threadsafe: false
+
+#inbound_services:
+#- channel_presence
+
+builtins:
+- remote_api: on
+- deferred: on
+
+handlers:
+- url: /set_webhook
+  login: admin
+  script: main.app
+
+- url: /get_webhook_info
+  login: admin
+  script: main.app
+
+- url: /delete_webhook
+  login: admin
+  script: main.app
+
+- url: /_ah/queue/deferred
+  script: google.appengine.ext.deferred.deferred.application
+  login: admin
+
+- url: /state_machine
+  static_dir: state_machine
+  application_readable: true
+
+- url: .*
+  script: main.app
+
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+- name: ssl
+  version: latest

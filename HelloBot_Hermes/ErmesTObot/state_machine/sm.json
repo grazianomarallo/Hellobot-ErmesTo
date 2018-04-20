@@ -1,0 +1,209 @@
+{
+  "config": {
+    "start_state": 0
+  },
+  "buttons": {
+
+ },
+  "states": {
+    "0": {
+      "instructions": "🏠 *Inizio*\n\n Premi su:\n🔎 CERCA  🍝 per cercare la mensa più vicina.\nℹ️ INFO 🍝 per info più dettagliate\n📮 FEEDBACK per inviarci suggerimenti.",
+      "keyboard": [["🔎 CERCA  🍝", "ℹ️ INFO 🍝"], ["📮 FEEDBACK"]],
+      "triggers": {
+        "text": [
+          {
+            "input": "🔎 CERCA  🍝",
+            "actions": [
+              {
+              "action_type": "CHANGE_STATE",
+              "action_params": {
+                "new_state": 1
+                }
+              }
+            ]
+          },
+          {
+            "input": "ℹ️ INFO 🍝",
+            "actions": [
+              {
+              "action_type": "CHANGE_STATE",
+              "action_params": {
+                "new_state": 2
+                }
+              }
+            ]
+          },
+          {
+            "input": "📮 FEEDBACK",
+            "actions": [
+              {
+                "action_type": "CHANGE_STATE",
+                "action_params": {
+                  "new_state": 9
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "1": {
+      "instructions": "Mandami la tua posizione.",
+      "triggers": {
+        "location": {
+          "actions": [
+            {
+              "action_type": "SEND_MAP",
+              "action_params": {
+                "url": ""
+              }
+            },
+            {
+              "action_type": "CHANGE_STATE",
+              "action_params": {
+                "new_state": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "instructions": "Scegli la mensa che ti interessa.",
+      "keyboard": "utility.makeArray2D(mensa_info.mensa_names,1)",
+      "triggers": {
+        "text": [
+          {
+            "input": "*",
+            "validation": "'__user_input__' in flat_kb",
+            "actions": [
+              {
+                "action_type": "SEND_TEXT",
+                "action_params": {
+                  "text": "mensa_info.getInfoMensa('__user_input__')"
+                }
+              },
+              {
+                "action_type": "SAVE_VAR",
+                "action_params": {
+                  "var_name": "mensa_name",
+                  "var_value": "__user_input__"
+                }
+              },
+              {
+                "action_type": "CHANGE_STATE",
+                "action_params": {
+                  "new_state": 4
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "4": {
+      "instructions": "Scegli tipo di informazione.",
+      "keyboard": [["🏠 HOME"],["📜 MENU", "📊 STATS"], ["🔙 INDIETRO"]],
+      "triggers": {
+        "text": [
+          {
+            "input": "📜 MENU",
+            "actions": [
+              {
+                "action_type": "SEND_TEXT",
+                "action_params": {
+                  "load_var_name": "mensa_name",
+                  "text": "mensa_info.getMenuInfo('__loaded_var__')"
+                }
+              }
+            ]
+          },
+          {
+            "input": "📊 STATS",
+            "actions": [
+              {
+              "action_type": "CHANGE_STATE",
+              "action_params": {
+                "new_state": 5
+                }
+              }
+            ]
+          },
+          {
+            "input": "🔙 INDIETRO",
+            "actions": [
+              {
+                "action_type": "CHANGE_STATE",
+                "action_params": {
+                  "new_state": 2
+                }
+              }
+            ]
+          },
+          {
+            "input": "🏠 HOME",
+            "actions": [
+              {
+                "action_type": "RESTART"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "5": {
+      "instructions": "*Informazioni affluenza:*\n\n",
+      "keyboard": [["🔙 INDIETRO"]],
+      "untriggered_actions": [
+        {
+          "action_type": "SEND_TEXT",
+          "action_params": {
+            "text": "rasberry.getPostiOccupati()"
+          }
+        }
+      ],
+      "triggers": {
+        "text": [
+          {
+            "input": "🔙 INDIETRO",
+            "actions": [
+              {
+                "action_type": "CHANGE_STATE",
+                "action_params": {
+                  "new_state": 4
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "9": {
+      "instructions": "📩 Non esitate a *contattarci*:\n\n 📝 Scrivi qua sotto qualsiasi feedback o consiglio",
+      "keyboard": [["🔙 INDIETRO"]],
+      "triggers": {
+        "text": [
+          {
+            "input": "🔙 INDIETRO",
+            "actions": [
+              {
+                "action_type": "RESTART"
+              }
+            ]
+          },
+          {
+            "input": "*",
+            "actions": [
+              {
+                "action_type": "SEND_TEXT_ADMIN",
+                "action_params": {
+                  "text": "__user_input__"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
